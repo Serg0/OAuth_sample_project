@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">OAuth_sample_project</string>
+
+    <string name="Button_isGooglePlayServicesAvailable">is Google Play Services Available?</string>
+
+</resources>
