@@ -1,9 +1,12 @@
 package com.example.oauth_sample_project;
 
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Application;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +17,12 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.AccountPicker;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.ConnectionResult;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -48,6 +57,12 @@ public class OAuth extends Activity {
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
 
+	private int ReqCode;
+
+	public int SOME_REQUEST_CODE = 1;
+
+	private String accountName;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,7 +91,7 @@ public class OAuth extends Activity {
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
-
+		
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -84,17 +99,34 @@ public class OAuth extends Activity {
 						attemptLogin();
 					}
 				});
-		
+	 ReqCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+	 
 		findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
 			
+			
+
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				
+				Toast.makeText(getApplication(), Integer.toString(ReqCode), Toast.LENGTH_LONG).show();
+				
+				Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+				         false, null, null, null, null);
+				 startActivityForResult(intent, SOME_REQUEST_CODE );
+				 Toast.makeText(getApplication(), "Account chosen " + accountName, Toast.LENGTH_LONG).show();
 				
 			}
 		});
 	}
 
+
+	 protected void onActivityResult(final int requestCode, final int resultCode,
+	         final Intent data) {
+	     if (requestCode == SOME_REQUEST_CODE && resultCode == RESULT_OK) {
+	          accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+	         
+	   }
+	 }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
