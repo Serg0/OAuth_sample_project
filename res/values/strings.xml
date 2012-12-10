@@ -4,4 +4,8 @@
 
     <string name="Button_isGooglePlayServicesAvailable">is Google Play Services Available?</string>
 
+    <string name="userData">Show User data</string>
+
+    <string name="token_expected">Token expected here!</string>
+
 </resources>
