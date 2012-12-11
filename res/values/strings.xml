@@ -2,7 +2,7 @@
 
     <string name="app_name">OAuth_sample_project</string>
 
-    <string name="Button_isGooglePlayServicesAvailable">is Google Play Services Available?</string>
+    <string name="Button1">Try to get some GoogleAcc resourses</string>
 
     <string name="userData">Show User data</string>
 

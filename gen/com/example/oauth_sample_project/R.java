@@ -147,7 +147,7 @@ containing a value of this type.
         public static final int activity_oauth=0x7f070000;
     }
     public static final class string {
-        public static final int Button_isGooglePlayServicesAvailable=0x7f05000c;
+        public static final int Button1=0x7f05000c;
         public static final int action_sign_in_register=0x7f050011;
         public static final int action_sign_in_short=0x7f050012;
         public static final int app_name=0x7f05000b;

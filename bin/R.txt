@@ -23,7 +23,7 @@ int id terrain 0x7f040003
 int id textView1 0x7f040006
 int layout activity_oauth 0x7f030000
 int menu activity_oauth 0x7f070000
-int string Button_isGooglePlayServicesAvailable 0x7f05000c
+int string Button1 0x7f05000c
 int string action_sign_in_register 0x7f050011
 int string action_sign_in_short 0x7f050012
 int string app_name 0x7f05000b
