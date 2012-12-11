@@ -7,11 +7,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -22,6 +24,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -36,34 +40,44 @@ public class OAuth extends Activity {
 	private int ReqCode;
 
 	public int SOME_REQUEST_CODE = 1;
+	private int MY_ACTIVITYS_AUTH_REQUEST_CODE = 2;
 
 	private String accountName;
 
 	private String accountType;
-	private String token;
+	// private String token;
 
 	TextView txtResult;
-	
+
 	public OAuth Instance;
 	public String result = "initial Token";
+	
+
 	class getTokenTask extends AsyncTask<Void, Void, String> {
-		
+
+		//
+		// txtResult.setText(result);
+		//
+		// task.execute(void(null));
+		//
+
 		@Override
-		protected String doInBackground(Void... noargs) {
-//			try {
-//				result = getToken();
-//				txtResult.setText(result);
-//				return result;
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			result = "No Token";
-			return result;
+		protected String doInBackground(Void... params) {
+
+			String _result = "Initial Token";
+			try {
+				_result = getToken();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return _result;
 		}
 
 		@Override
 		protected void onPostExecute(String _result) {
+
+			super.onPostExecute(_result);
+			Log.d("getToken", _result);
 			txtResult.setText(_result);
 		}
 	}
@@ -73,8 +87,8 @@ public class OAuth extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_oauth);
-		TextView txtResult = (TextView) findViewById(R.id.textView1);
- Instance = this;
+		txtResult = (TextView) findViewById(R.id.textView1);
+		Instance = this;
 		ReqCode = GooglePlayServicesUtil
 				.isGooglePlayServicesAvailable(getApplicationContext());
 
@@ -112,16 +126,16 @@ public class OAuth extends Activity {
 								"Account TYPE chosen " + accountType,
 								Toast.LENGTH_LONG).show();
 
-//						try {
-//							Toast.makeText(getApplication(),
-//									"Token " + getToken(), Toast.LENGTH_LONG)
-//									.show();
-							getTokenTask _getTokenTask = new getTokenTask();
-							_getTokenTask.execute();
-							
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
+						// try {
+						// Toast.makeText(getApplication(),
+						// "Token " + getToken(), Toast.LENGTH_LONG)
+						// .show();
+//						getTokenTask _getTokenTask = new getTokenTask();
+//						_getTokenTask.execute();
+
+						// } catch (InterruptedException e) {
+						// e.printStackTrace();
+						// }
 
 					}
 				});
@@ -129,25 +143,40 @@ public class OAuth extends Activity {
 
 	public String getToken() throws InterruptedException {
 
-		
-		 Runnable runnable = new Runnable() {
-		
-		 @Override
-		 public void run() {
+		String token = "pre Token " + SCOPES;
+		//
+		// Runnable runnable = new Runnable() {
+		//
+		// @Override
+		// public void run() {
 		try {
 			token = GoogleAuthUtil.getToken(Instance.getApplicationContext(),
 					accountName, SCOPES);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (GooglePlayServicesAvailabilityException e) {
+			e.printStackTrace();
+//			Dialog alert = GooglePlayServicesUtil.getErrorDialog(
+//					e.getConnectionStatusCode(), this, SOME_REQUEST_CODE);
+			Log.d("getToken", "GooglePlayServicesAvailabilityException e "+e.getConnectionStatusCode());
+		
+		} catch (UserRecoverableAuthException userAuthEx) {
+			Log.d("getToken", "UserRecoverableAuthException userAuthEx");
+			
+			startActivityForResult(
+					userAuthEx.getIntent(),
+	                  MY_ACTIVITYS_AUTH_REQUEST_CODE);
+			userAuthEx.printStackTrace();
 		} catch (GoogleAuthException e) {
+			Log.d("getToken", "GoogleAuthException e");
 			e.printStackTrace();
 		}
 
-		 }};
-		 Thread thread;
-		 thread = new Thread(runnable);
-		 thread.start();
-		 thread.join();
+		// }};
+		// Thread thread;
+		// thread = new Thread(runnable);
+		// thread.start();
+		// thread.join();
 
 		return token;
 	}
@@ -157,7 +186,16 @@ public class OAuth extends Activity {
 		if (requestCode == SOME_REQUEST_CODE && resultCode == RESULT_OK) {
 			accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 			accountType = data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+			Toast.makeText(getApplication(), "Account chosen " + accountName,
+					Toast.LENGTH_LONG).show();
+			getTokenTask _getTokenTask = new getTokenTask();
+			_getTokenTask.execute();
 
+		}
+		if(requestCode == MY_ACTIVITYS_AUTH_REQUEST_CODE)
+		{
+			getTokenTask _getTokenTask = new getTokenTask();
+			_getTokenTask.execute();
 		}
 	}
 
