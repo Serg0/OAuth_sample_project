@@ -167,7 +167,6 @@ public class OAuth extends Activity {
 		} catch (UserRecoverableAuthException userAuthEx) {
 			Log.d("getToken", "UserRecoverableAuthException userAuthEx");
 			Log.d("getToken", "userAuthEx.getIntent().toString();" + userAuthEx.getIntent().toString());
-			
 			startActivityForResult(userAuthEx.getIntent(),
 					MY_ACTIVITYS_AUTH_REQUEST_CODE);
 			userAuthEx.printStackTrace();
