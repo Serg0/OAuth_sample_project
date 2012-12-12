@@ -40,8 +40,11 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 public class OAuth extends Activity {
 	private final static String G_PLUS_SCOPE = "oauth2:https://www.googleapis.com/auth/plus.me";
 	private final static String USERINFO_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
-//	private final static String USERINFO_SCOPE = "";
-	private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE;
+
+	private final static String PLUS_MOMENTS_WRITE = "https://www.googleapis.com/auth/plus.moments.write";
+
+	private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE
+			+ " " + PLUS_MOMENTS_WRITE;
 	private int ReqCode;
 
 	private final static String GET_REQUEST = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
@@ -60,11 +63,8 @@ public class OAuth extends Activity {
 
 	class getTokenTask extends AsyncTask<Void, Void, String> {
 
-		
-
 		@Override
 		protected String doInBackground(Void... params) {
-
 			String _result = "Initial Token";
 			try {
 				_result = getToken();
@@ -97,22 +97,30 @@ public class OAuth extends Activity {
 		findViewById(R.id.button1).setOnClickListener(
 				new View.OnClickListener() {
 
+					
+
 					@Override
 					public void onClick(View v) {
 						if (ReqCode == ConnectionResult.SUCCESS) {
+														/*accountName = "nexus.moc@gmail.com";
+							 accountName = "serhii.nadolinskyi@gmail.com";
+							  accountName = "comonitos@gmail.com";
+							 
+							accountName = "nexus.moc@gmail.com";
+							getTokenTask _getTokenTask = new getTokenTask();
+							_getTokenTask.execute();*/
+							
 							Intent intent = AccountPicker
 									.newChooseAccountIntent(null, null,
 											new String[] { "com.google" },
 											false, null, null, null, null);
 							startActivityForResult(intent, SOME_REQUEST_CODE);
 						} else {
-						 Dialog alert = GooglePlayServicesUtil
+							Dialog alert = GooglePlayServicesUtil
 									.getErrorDialog(ReqCode, Instance,
 											IS_GOOGLE_PLAY_SERVICE_AVALIABLE_REQUEST_CODE);
-						 alert.show();
+							alert.show();
 						}
-
-						
 
 					}
 				});
@@ -121,27 +129,21 @@ public class OAuth extends Activity {
 				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-//						Toast.makeText(getApplication(),
-//								"Account chosen " + accountName,
-//								Toast.LENGTH_LONG).show();
-//						Toast.makeText(getApplication(),
-//								"Account TYPE chosen " + accountType,
-//								Toast.LENGTH_LONG).show();
-						new Thread(new Runnable(){
+						new Thread(new Runnable() {
 
 							@Override
 							public void run() {
 								try {
 									DataProvider.getFeed(GET_REQUEST, token);
-								
+
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
-								
+
 							}
-						
+
 						}).start();
 					}
 				});
@@ -154,17 +156,18 @@ public class OAuth extends Activity {
 		try {
 			token = GoogleAuthUtil.getToken(Instance.getApplicationContext(),
 					accountName, SCOPES);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (GooglePlayServicesAvailabilityException e) {
 			e.printStackTrace();
-			// Dialog alert = GooglePlayServicesUtil.getErrorDialog(
-			// e.getConnectionStatusCode(), this, SOME_REQUEST_CODE);
 			Log.d("getToken",
 					"GooglePlayServicesAvailabilityException e "
 							+ e.getConnectionStatusCode());
 		} catch (UserRecoverableAuthException userAuthEx) {
 			Log.d("getToken", "UserRecoverableAuthException userAuthEx");
+			Log.d("getToken", "userAuthEx.getIntent().toString();" + userAuthEx.getIntent().toString());
+			
 			startActivityForResult(userAuthEx.getIntent(),
 					MY_ACTIVITYS_AUTH_REQUEST_CODE);
 			userAuthEx.printStackTrace();
@@ -181,6 +184,7 @@ public class OAuth extends Activity {
 		if (requestCode == SOME_REQUEST_CODE && resultCode == RESULT_OK) {
 			accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 			accountType = data.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+			Log.d("getToken", accountName);
 			Toast.makeText(getApplication(), "Account chosen " + accountName,
 					Toast.LENGTH_LONG).show();
 			getTokenTask _getTokenTask = new getTokenTask();

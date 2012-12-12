@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -53,31 +54,18 @@ public class DataProvider {
 				sb.append(line);
 			}
 			String result = sb.toString();
+
 			JSONObject jObject = new JSONObject(result);
-//			JSONArray jArray = new JSONArray(result);
-//			Log.d(LOG_TAG, "jObject " + jObject.toString());
-//			JSONObject feed = jObject.getJSONObject("feed");
-//			JSONArray jArray = feed.getJSONArray("entry");
-			Log.d(LOG_TAG, "jObject.toString() " + jObject.toString());
-/*			for (int i = 0; i < jArray.length(); i++) {
-//				JSONObject oneObject = jArray.getJSONObject(i);
-				Log.d(LOG_TAG, "jArray.opt(i).toString(); " + jArray.opt(i).toString());
-//				String updated = oneObject.getJSONObject("updated").getString(
-//						"$t");
-//				String title = oneObject.getJSONObject("title").getString("$t");
-//				String content = oneObject.getJSONObject("content").getString(
-//						"$t");
-//				String published = oneObject.getJSONObject("published")
-//						.getString("$t");
-//				String id = oneObject.getJSONObject("id").getString("$t");
-//
-//				Article article = new Article(title, content, published,
-//						updated, id);
-//
-//				localArray.add(article);
 
-			}*/
-
+			String name;
+			String value;
+			Iterator<?> keys = jObject.keys();
+			while (keys.hasNext()) {
+				name = keys.next().toString();
+				value = jObject.getString(name).toString();
+				localArray.put(name, value);
+				Log.d(LOG_TAG, "name: " + name + ", value: " + value);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
