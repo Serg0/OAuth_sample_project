@@ -44,7 +44,7 @@ public class OAuth extends Activity {
 	private final static String PLUS_MOMENTS_WRITE = "https://www.googleapis.com/auth/plus.moments.write";
 
 	private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE
-			+ " " + PLUS_MOMENTS_WRITE;
+			/*+ " " + PLUS_MOMENTS_WRITE*/;
 	private int ReqCode;
 
 	private final static String GET_REQUEST = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
@@ -97,19 +97,11 @@ public class OAuth extends Activity {
 		findViewById(R.id.button1).setOnClickListener(
 				new View.OnClickListener() {
 
-					
 
 					@Override
 					public void onClick(View v) {
 						if (ReqCode == ConnectionResult.SUCCESS) {
-														/*accountName = "nexus.moc@gmail.com";
-							 accountName = "serhii.nadolinskyi@gmail.com";
-							  accountName = "comonitos@gmail.com";
-							 
-							accountName = "nexus.moc@gmail.com";
-							getTokenTask _getTokenTask = new getTokenTask();
-							_getTokenTask.execute();*/
-							
+											
 							Intent intent = AccountPicker
 									.newChooseAccountIntent(null, null,
 											new String[] { "com.google" },
