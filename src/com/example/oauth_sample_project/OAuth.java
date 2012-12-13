@@ -44,8 +44,11 @@ public class OAuth extends Activity {
 	private final static String G_PLUS_SCOPE = "oauth2:https://www.googleapis.com/auth/plus.me";
 	private final static String USERINFO_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
 	private final static String PLUS_MOMENTS_WRITE = "https://www.googleapis.com/auth/plus.moments.write";
+	private final static String CONTACTS_SCOPE= "https://www.google.com/m8/feeds/";
+	
+	
 	private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE
-	/* + " " + PLUS_MOMENTS_WRITE */;
+	/* + " " + PLUS_MOMENTS_WRITE */+" "+CONTACTS_SCOPE;
 	private int ReqCode;
 
 	private final static String GET_REQUEST = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
@@ -126,11 +129,14 @@ public class OAuth extends Activity {
 			@Override
 			public void onClick(View v) {
 				Thread thread;
+				
 				Runnable runable = new Runnable(){
 					@SuppressLint("NewApi")
 					@Override
 					public void run(){							
-							try {
+							try {Log.d("getToken",
+									"try to access with token "+
+											token);
 								userInfo = DataProvider.getFeed(GET_REQUEST, token);
 							} catch (NetworkOnMainThreadException e) {
 								e.printStackTrace();
@@ -148,15 +154,32 @@ public class OAuth extends Activity {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			 						 
-			txtResult.setText(userInfo.toString());
+			
+			
+			if (userInfo != null){
+				txtResult.setText(userInfo.toString());}
+			else{
+				txtResult.setText("no data");
+			}
+			
 	
 				
 			}
 		});
-
+findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+	
+	@Override
+	public void onClick(View v) {
+		GoogleAuthUtil.invalidateToken(Instance.getApplicationContext(), token);	
+		txtResult.setText("Token invalidated");
+	}
+});
 		
 }
+	
+public void invalidateToken(){
+	GoogleAuthUtil.invalidateToken(Instance.getApplicationContext(), token);	
+	}
 	public String getToken() throws InterruptedException {
 
 		String token = "pre Token " + SCOPES;
@@ -174,9 +197,9 @@ public class OAuth extends Activity {
 							+ e.getConnectionStatusCode());
 		} catch (UserRecoverableAuthException userAuthEx) {
 			Log.d("getToken", "UserRecoverableAuthException userAuthEx");
-			Log.d("getToken", "userAuthEx.getIntent().toString();"
-					+ userAuthEx.getIntent().toString());
-			startActivityForResult(userAuthEx.getIntent(),
+			Log.d("getToken", "UserRecoverableAuthException userAuthEx "+userAuthEx.getIntent().getExtras().toString());
+			
+						startActivityForResult(userAuthEx.getIntent(),
 					MY_ACTIVITYS_AUTH_REQUEST_CODE);
 			userAuthEx.printStackTrace();
 		} catch (GoogleAuthException e) {
@@ -198,7 +221,7 @@ public class OAuth extends Activity {
 			getTokenTask _getTokenTask = new getTokenTask();
 			_getTokenTask.execute();
 		}
-		if (requestCode == MY_ACTIVITYS_AUTH_REQUEST_CODE) {
+		if (requestCode == MY_ACTIVITYS_AUTH_REQUEST_CODE && resultCode == RESULT_OK) {
 			getTokenTask _getTokenTask = new getTokenTask();
 			_getTokenTask.execute();
 		}

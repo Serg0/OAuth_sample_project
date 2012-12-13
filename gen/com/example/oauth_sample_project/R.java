@@ -132,13 +132,14 @@ containing a value of this type.
     }
     public static final class id {
         public static final int button1=0x7f040004;
-        public static final int button2=0x7f040005;
-        public static final int menu_forgot_password=0x7f040007;
+        public static final int button2=0x7f040006;
+        public static final int button3=0x7f040005;
+        public static final int menu_forgot_password=0x7f040008;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
         public static final int satellite=0x7f040002;
         public static final int terrain=0x7f040003;
-        public static final int textView1=0x7f040006;
+        public static final int textView1=0x7f040007;
     }
     public static final class layout {
         public static final int activity_oauth=0x7f030000;
@@ -148,8 +149,8 @@ containing a value of this type.
     }
     public static final class string {
         public static final int Button1=0x7f05000c;
-        public static final int action_sign_in_register=0x7f050011;
-        public static final int action_sign_in_short=0x7f050012;
+        public static final int action_sign_in_register=0x7f050012;
+        public static final int action_sign_in_short=0x7f050013;
         public static final int app_name=0x7f05000b;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
@@ -194,16 +195,17 @@ containing a value of this type.
         Google Play services (from Play Store) [CHAR LIMIT=40] 
          */
         public static final int common_google_play_services_update_title=0x7f050007;
-        public static final int error_field_required=0x7f050018;
-        public static final int error_incorrect_password=0x7f050017;
-        public static final int error_invalid_email=0x7f050015;
-        public static final int error_invalid_password=0x7f050016;
-        public static final int login_progress_signing_in=0x7f050014;
-        public static final int menu_forgot_password=0x7f050013;
+        public static final int error_field_required=0x7f050019;
+        public static final int error_incorrect_password=0x7f050018;
+        public static final int error_invalid_email=0x7f050016;
+        public static final int error_invalid_password=0x7f050017;
+        public static final int invalidate_token=0x7f05000f;
+        public static final int login_progress_signing_in=0x7f050015;
+        public static final int menu_forgot_password=0x7f050014;
         /**  Strings related to login 
          */
-        public static final int prompt_email=0x7f05000f;
-        public static final int prompt_password=0x7f050010;
+        public static final int prompt_email=0x7f050010;
+        public static final int prompt_password=0x7f050011;
         public static final int token_expected=0x7f05000e;
         public static final int userData=0x7f05000d;
     }

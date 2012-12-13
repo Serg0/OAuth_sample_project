@@ -28,7 +28,6 @@ public class DataProvider {
 			String token) throws NetworkOnMainThreadException, IOException,
 			JSONException {
 		long time = System.currentTimeMillis();
-		Log.d(LOG_TAG, "Starting to download " + time);
 		URL url = new URL(_url + token);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		LinkedHashMap<String, String> map;

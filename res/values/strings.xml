@@ -8,4 +8,6 @@
 
     <string name="token_expected">Token expected here!</string>
 
+    <string name="invalidate_token">Invalidate token</string>
+
 </resources>
