@@ -1,12 +1,14 @@
 package com.example.oauth_sample_project;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import org.json.JSONException;
 
 import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
@@ -37,14 +39,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
+@SuppressLint("NewApi")
 public class OAuth extends Activity {
 	private final static String G_PLUS_SCOPE = "oauth2:https://www.googleapis.com/auth/plus.me";
 	private final static String USERINFO_SCOPE = "https://www.googleapis.com/auth/userinfo.profile";
-
 	private final static String PLUS_MOMENTS_WRITE = "https://www.googleapis.com/auth/plus.moments.write";
-
 	private final static String SCOPES = G_PLUS_SCOPE + " " + USERINFO_SCOPE
-			/*+ " " + PLUS_MOMENTS_WRITE*/;
+	/* + " " + PLUS_MOMENTS_WRITE */;
 	private int ReqCode;
 
 	private final static String GET_REQUEST = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
@@ -54,7 +55,7 @@ public class OAuth extends Activity {
 
 	private String accountName;
 	private String accountType;
-
+	private LinkedHashMap<String, String> userInfo;
 	TextView txtResult;
 
 	public OAuth Instance;
@@ -91,17 +92,20 @@ public class OAuth extends Activity {
 		setContentView(R.layout.activity_oauth);
 		txtResult = (TextView) findViewById(R.id.textView1);
 		Instance = this;
-		ReqCode = GooglePlayServicesUtil
-				.isGooglePlayServicesAvailable(getApplicationContext());
+//		ReqCode = GooglePlayServicesUtil
+//				.isGooglePlayServicesAvailable(getApplicationContext());
+		
 
 		findViewById(R.id.button1).setOnClickListener(
 				new View.OnClickListener() {
 
-
 					@Override
 					public void onClick(View v) {
+						ReqCode = GooglePlayServicesUtil
+								.isGooglePlayServicesAvailable(getApplicationContext());
+						
 						if (ReqCode == ConnectionResult.SUCCESS) {
-											
+
 							Intent intent = AccountPicker
 									.newChooseAccountIntent(null, null,
 											new String[] { "com.google" },
@@ -116,31 +120,43 @@ public class OAuth extends Activity {
 
 					}
 				});
-
-		findViewById(R.id.button2).setOnClickListener(
-				new View.OnClickListener() {
+		
+		findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Thread thread;
+				Runnable runable = new Runnable(){
+					@SuppressLint("NewApi")
 					@Override
-					public void onClick(View v) {
-						new Thread(new Runnable() {
-
-							@Override
-							public void run() {
-								try {
-									DataProvider.getFeed(GET_REQUEST, token);
-
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-
+					public void run(){							
+							try {
+								userInfo = DataProvider.getFeed(GET_REQUEST, token);
+							} catch (NetworkOnMainThreadException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							} catch (JSONException e) {
+								e.printStackTrace();
 							}
+					}						 };
+					
+			thread =  new Thread(runable);
+			thread.start();
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			 						 
+			txtResult.setText(userInfo.toString());
+	
+				
+			}
+		});
 
-						}).start();
-					}
-				});
-	}
-
+		
+}
 	public String getToken() throws InterruptedException {
 
 		String token = "pre Token " + SCOPES;
@@ -148,7 +164,7 @@ public class OAuth extends Activity {
 		try {
 			token = GoogleAuthUtil.getToken(Instance.getApplicationContext(),
 					accountName, SCOPES);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (GooglePlayServicesAvailabilityException e) {
@@ -158,7 +174,8 @@ public class OAuth extends Activity {
 							+ e.getConnectionStatusCode());
 		} catch (UserRecoverableAuthException userAuthEx) {
 			Log.d("getToken", "UserRecoverableAuthException userAuthEx");
-			Log.d("getToken", "userAuthEx.getIntent().toString();" + userAuthEx.getIntent().toString());
+			Log.d("getToken", "userAuthEx.getIntent().toString();"
+					+ userAuthEx.getIntent().toString());
 			startActivityForResult(userAuthEx.getIntent(),
 					MY_ACTIVITYS_AUTH_REQUEST_CODE);
 			userAuthEx.printStackTrace();
